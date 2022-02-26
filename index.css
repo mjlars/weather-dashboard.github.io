@@ -1,0 +1,21 @@
+.header, #todaysWeather, #city-name-date {
+    padding: 1.5rem;
+}
+
+.saved-cities {
+    font-size: .75rem;
+    padding: .5rem .75rem;
+    border-radius: .25rem;
+    border: 2px solid #219ebc;
+}
+
+.col-2 {
+    border-radius: .25rem;
+    border: 2px solid #219ebc;
+    width: 20%;
+}
+
+#todaysWeather {
+    border: 2px solid #219ebc;
+    border-radius: .25rem;
+}
