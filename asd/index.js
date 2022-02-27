@@ -1,152 +1,159 @@
 const apiKey = '902dfe72fb5ea965cc54e93864dcdc1e';
 const apiUrl = 'https://api.openweathermap.org/data/2.5/weather?q=${inputVal}&appid=${apiKey}&units=metric';
+let submitBtn = document.getElementById('city-search');
+let temperature = document.getElementById('temp');
+let cityWind = document.getElementById('wind');
+let humid = document.getElementById('humidity');
+let uv = document.getElementById('uv-index');
+let savedCities = [];
+let searchCities = document.getElementById('saved-cities');
+let cityName = document.getElementById('city-name-date');
 
-// DOM elements
-
-
-// moment.js
-var today = moment().format('MMMM Do YYYY');
+//get moment js
+var now = moment().format('MMMM Do YYYY');
 console.log(moment());
-document.getElementById('date-today').append(today);
+document.getElementById('date-today').append(now);
 
-if(localStorage.getItem('cities') != null) {
-    savedCities = JSON.parse(localStorage.getItem('cities'));
-    console.log(savedCities);
-    for (let i=0; i < savedCities.length; i++) {
-        var button = document.createElement('button');
-        button.innerHTML = savedCities[i];
-        button.classList.add('saved-cities');
-        button.addEventListener('click', weatherApi);
-        searchCities.appendChild(button);
-    }
+//get cities from local storage to display search history 
+if(localStorage.getItem("cities") != null) {
+savedCities = JSON.parse(localStorage.getItem("cities"))
+for (var i=0; i< savedCities.length; i++) {
+    var btn = document.createElement("button");
+    btn.innerHTML = savedCities[i];
+    btn.classList.add('saved-cities');
+    btn.addEventListener("click", cityWeather);
+    searchCities.appendChild(btn);
+
+
+}
 };
 
-submitButton.addEventListener('click', weatherApi);
+submitBtn.addEventListener('click', cityWeather);
 
-function weatherApi (e) {
-    e.preventDefault();
-    console.log(e);
-
-    if(e.target.nodeName == 'BUTTON') {
-        console.log('button clicked');
-        var city = e.target.innerText;
+//get city from API 
+function cityWeather (event) {
+    console.log(event);
+    if (event.target.nodeName == "BUTTON") {
+        console.log("condition met");
+        var city = event.target.innerText;
     }
     else {
-        var city = document.getElementById('city-input').value;
+    var city = document.getElementById('city-input').value;
     }
     if (savedCities.includes(city)) {
-        console.log('city already exists');
-    } else if (city.trim() == '') {
-        return;
+        console.log("duplicate city");
+    } else if (city.trim() == "" ) {
+      return;  
     } else {
         savedCities.push(city);
-    }
-
-    cityName.innerHTML = city;
-
+    };
+        cityName.innerHTML = city; /* add date */
 
     localStorage.setItem('cities', JSON.stringify(savedCities));
-    const eachCityUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&appid=${apiKey}`;
+    var cityWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&appid=${apiKey}`;
+    
+    fetch(cityWeatherUrl).then(function(reponse) {
+        if(reponse.ok) {
+            reponse.json().then(function(data) {
+                console.log(data);
+                temperature.innerHTML = "Temperature: " + data.main.temp + " &degF";
+                cityWind.textContent = "Wind:  " + data.wind.speed + " mph";
+                humid.textContent ="Humidity: " +  data.main.humidity + " %";
+                var lat = data.coord.lat;
+                var lon = data.coord.lon;
+                var coordUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&units=imperial&exclude=minutely,hourly&appid=${apiKey}`;
+                // create five day forcast get elements from HTML 
+                fetch(coordUrl).then(function(response) {
+                    if(reponse.ok) {
+                        response.json().then(function(data){
+                            console.log(data);
+                                uv.textContent = "UV Index: " + data.current.uvi;
+                                var icon = data.current.weather[0].icon;
+                                var iconLink = `http://openweathermap.org/img/wn/${icon}@2x.png`
 
-    fetch(eachCityUrl).then(function(res) {
-        if(res.ok) {
-            res.json().then(function(data) {
-                temperature.innerHTML = 'Temperature: ' + data.main.temp + '&deg;F';
-                cityWindSpeed.innerHTML = 'Wind Speed: ' + data.wind.speed + ' MPH';
-                cityHumidity.innerHTML = 'Humidity: ' + data.main.humidity + '%';
-                const latitude = data.coord.lat;
-                const longitude = data.coord.lon;
-                const coordinateUrl = `https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&units=imperial&exclude=minutely,hourly&appid=${apiKey}`;
-
-                fetch(coordinateUrl).then(function(res) {
-                    if(res.ok) {
-                        res.json().then(function(data) {
-
-                            uvIndex.textContent = 'UV Index: ' + data.current.uvi;
-                            const icon = data.current.weather[0].icon;
-                            const iconUrl = `openweathermap.org/img/wn/${icon}@2x.png`;
-
-                            temperature1.innerHTML = 'Temperature: ' + data.daily[1].temp.max + '&deg;F';
-                            cityWindSpeed1.innerHTML = 'Wind Speed: ' + data.daily[1].wind_speed + ' MPH';
-                            cityHumidity1.innerHTML = 'Humidity: ' + data.daily[1].humidity + '%';
-                            uvIndex1.textContent = 'UV Index: ' + data.daily[1].uvi;
+                            temperature1.innerHTML = "Temp: " + data.daily[1].temp.max + " &degF";
+                            cityWind1.innerHTML ="Wind: " + data.daily[1].wind_speed + " mph";
+                            humid1.innerHTML ="Humidity: " + data.daily[1].humidity + " %";
+                            uv1.innerHTML ="Uv Index: " + data.daily[1].uvi;
                             cityName1.innerHTML = city;
-                            img1.src = iconUrl;
+                            img1.src = iconLink;
 
-                            temperature2.innerHTML = 'Temperature: ' + data.daily[2].temp.max + '&deg;F';
-                            cityWindSpeed2.innerHTML = 'Wind Speed: ' + data.daily[2].wind_speed + ' MPH';
-                            cityHumidity2.innerHTML = 'Humidity: ' + data.daily[2].humidity + '%';
-                            uvIndex2.textContent = 'UV Index: ' + data.daily[2].uvi;
+                            temperature2.innerHTML = "Temp: " + data.daily[2].temp.max + " &degF";
+                            cityWind2.innerHTML ="Wind: " + data.daily[2].wind_speed + " mph";
+                            humid2.innerHTML ="Humidity: " + data.daily[2].humidity + " %";
+                            uv2.innerHTML = "Uv Index: " +data.daily[2].uvi;
                             cityName2.innerHTML = city;
-                            img2.src = iconUrl;
+                            img2.src = iconLink;
 
-                            temperature3.innerHTML = 'Temperature: ' + data.daily[3].temp.max + '&deg;F';
-                            cityWindSpeed3.innerHTML = 'Wind Speed: ' + data.daily[3].wind_speed + ' MPH';
-                            cityHumidity3.innerHTML = 'Humidity: ' + data.daily[3].humidity + '%';
-                            uvIndex3.textContent = 'UV Index: ' + data.daily[3].uvi;
+                            temperature3.innerHTML = "Temp: " +data.daily[3].temp.max + " &degF";
+                            cityWind3.innerHTML = "Wind: " +data.daily[3].wind_speed + " mph";
+                            humid3.innerHTML ="Humidity: " + data.daily[3].humidity + " %";
+                            uv3.innerHTML = "Uv Index: " + data.daily[3].uvi;
                             cityName3.innerHTML = city;
-                            img3.src = iconUrl;
+                            img3.src = iconLink;
 
-                            temperature4.innerHTML = 'Temperature: ' + data.daily[4].temp.max + '&deg;F';
-                            cityWindSpeed4.innerHTML = 'Wind Speed: ' + data.daily[4].wind_speed + ' MPH';
-                            cityHumidity4.innerHTML = 'Humidity: ' + data.daily[4].humidity + '%';
-                            uvIndex4.textContent = 'UV Index: ' + data.daily[4].uvi;
+                            temperature4.innerHTML ="Temp: " + data.daily[4].temp.max + " &degF";
+                            cityWind4.innerHTML = "Wind: " +data.daily[4].wind_speed + " mph";
+                            humid4.innerHTML ="Humidity: " + data.daily[4].humidity + " %";
+                            uv4.innerHTML ="Uv Index: " + data.daily[4].uvi;
                             cityName4.innerHTML = city;
-                            img4.src = iconUrl;
+                            img4.src = iconLink;
 
-                            temperature5.innerHTML = 'Temperature: ' + data.daily[5].temp.max + '&deg;F';
-                            cityWindSpeed5.innerHTML = 'Wind Speed: ' + data.daily[5].wind_speed + ' MPH';
-                            cityHumidity5.innerHTML = 'Humidity: ' + data.daily[5].humidity + '%';
-                            uvIndex5.textContent = 'UV Index: ' + data.daily[5].uvi;
+                            temperature5.innerHTML ="Temp: " + data.daily[5].temp.max + " &degF";
+                            cityWind5.innerHTML ="Wind: " + data.daily[5].wind_speed + " mph";
+                            humid5.innerHTML ="Humidity: " + data.daily[5].humidity + " %";
+                            uv5.innerHTML ="Uv Index: " + data.daily[5].uvi;
                             cityName5.innerHTML = city;
-                            img5.src = iconUrl;
-                        })
+                            img5.src = iconLink;
+
+
+                        });
                     }
                 })
-            })
-        }
-    })
-}
+        
+            });
+            console.log("API get worked");
+        };
 
+    })
+};
+
+//save cities to local storage and append
 console.log(JSON.parse(localStorage.getItem("cities")));
 console.log(savedCities.length);
 
-const submitButton = document.getElementById('city-search');
-const temperature = document.getElementById('temp');
-const cityWindSpeed = document.getElementById('wind');
-const cityHumidity = document.getElementById('humidity');
-const uvIndex = document.getElementById('uv-index');
-const savedCities = [];
-const searchCities = document.getElementsByTagName('saved-cities');
-const cityName = document.getElementById('city-name-date');
 
-const temperature1 = document.getElementById('temp1');
-const cityWindSpeed1 = document.getElementById('wind1');
-const cityHumidity1 = document.getElementById('humidity1');
-const uvIndex1 = document.getElementById('uv-index1');
-const cityName1 = document.getElementById('city-name-date1');
-const icon1 = document.getElementById("img1");
 
-const temperature2 = document.getElementById('temp2');
-const cityWindSpeed2 = document.getElementById('wind2');
-const cityHumidity2 = document.getElementById('humidity2');
-const uvIndex2 = document.getElementById('uv-index2');
-const cityName2 = document.getElementById('city-name-date2');
 
-const temperature3 = document.getElementById('temp3');
-const cityWindSpeed3 = document.getElementById('wind3');
-const cityHumidity3 = document.getElementById('humidity3');
-const uvIndex3 = document.getElementById('uv-index3');
-const cityName3 = document.getElementById('city-name-date3');
 
-const temperature4 = document.getElementById('temp4');
-const cityWindSpeed4 = document.getElementById('wind4');
-const cityHumidity4 = document.getElementById('humidity4');
-const uvIndex4 = document.getElementById('uv-index4');
-const cityName4 = document.getElementById('city-name-date4');
+ 
+let temperature1 = document.getElementById('temp1');
+let cityWind1 = document.getElementById('wind1');
+let humid1 = document.getElementById('humidity1');
+let uv1 = document.getElementById('uv-index1');
+let cityName1 = document.getElementById('city-name-date1');
+let icon1 = document.getElementById("img1");
 
-const temperature5 = document.getElementById('temp5');
-const cityWindSpeed5 = document.getElementById('wind5');
-const cityHumidity5 = document.getElementById('humidity5');
-const uvIndex5 = document.getElementById('uv-index5');
-const cityName5 = document.getElementById('city-name-date5');
+let temperature2 = document.getElementById('temp2');
+let cityWind2 = document.getElementById('wind2');
+let humid2 = document.getElementById('humidity2');
+let uv2 = document.getElementById('uv-index2');
+let cityName2 = document.getElementById('city-name-date2');
+
+let temperature3 = document.getElementById('temp3');
+let cityWind3 = document.getElementById('wind3');
+let humid3 = document.getElementById('humidity3');
+let uv3 = document.getElementById('uv-index3');
+let cityName3 = document.getElementById('city-name-date3');
+
+let temperature4 = document.getElementById('temp4');
+let cityWind4 = document.getElementById('wind4');
+let humid4 = document.getElementById('humidity4');
+let uv4 = document.getElementById('uv-index4');
+let cityName4 = document.getElementById('city-name-date4');
+
+let temperature5 = document.getElementById('temp5');
+let cityWind5 = document.getElementById('wind5');
+let humid5 = document.getElementById('humidity5');
+let uv5 = document.getElementById('uv-index5');
+let cityName5 = document.getElementById('city-name-date5');
