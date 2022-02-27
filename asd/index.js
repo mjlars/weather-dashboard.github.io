@@ -2,45 +2,7 @@ const apiKey = '902dfe72fb5ea965cc54e93864dcdc1e';
 const apiUrl = 'https://api.openweathermap.org/data/2.5/weather?q=${inputVal}&appid=${apiKey}&units=metric';
 
 // DOM elements
-const submitButton = document.getElementById('city-search');
-const temperature = document.getElementById('temp');
-const cityWindSpeed = document.getElementById('wind');
-const cityHumidity = document.getElementById('humidity');
-const uvIndex = document.getElementById('uv-index');
-const savedCities = [];
-const searchCities = document.getElementsByTagName('saved-cities');
-const cityName = document.getElementById('city-name-date');
 
-const temperature1 = document.getElementById('temp1');
-const cityWindSpeed1 = document.getElementById('wind1');
-const cityHumidity1 = document.getElementById('humidity1');
-const uvIndex1 = document.getElementById('uv-index1');
-const cityName1 = document.getElementById('city-name-date1');
-const icon1 = document.getElementById("img1");
-
-const temperature2 = document.getElementById('temp2');
-const cityWindSpeed2 = document.getElementById('wind2');
-const cityHumidity2 = document.getElementById('humidity2');
-const uvIndex2 = document.getElementById('uv-index2');
-const cityName2 = document.getElementById('city-name-date2');
-
-const temperature3 = document.getElementById('temp3');
-const cityWindSpeed3 = document.getElementById('wind3');
-const cityHumidity3 = document.getElementById('humidity3');
-const uvIndex3 = document.getElementById('uv-index3');
-const cityName3 = document.getElementById('city-name-date3');
-
-const temperature4 = document.getElementById('temp4');
-const cityWindSpeed4 = document.getElementById('wind4');
-const cityHumidity4 = document.getElementById('humidity4');
-const uvIndex4 = document.getElementById('uv-index4');
-const cityName4 = document.getElementById('city-name-date4');
-
-const temperature5 = document.getElementById('temp5');
-const cityWindSpeed5 = document.getElementById('wind5');
-const cityHumidity5 = document.getElementById('humidity5');
-const uvIndex5 = document.getElementById('uv-index5');
-const cityName5 = document.getElementById('city-name-date5');
 
 // moment.js
 var today = moment().format('MMMM Do YYYY');
@@ -148,3 +110,43 @@ function weatherApi (e) {
 
 console.log(JSON.parse(localStorage.getItem("cities")));
 console.log(savedCities.length);
+
+const submitButton = document.getElementById('city-search');
+const temperature = document.getElementById('temp');
+const cityWindSpeed = document.getElementById('wind');
+const cityHumidity = document.getElementById('humidity');
+const uvIndex = document.getElementById('uv-index');
+const savedCities = [];
+const searchCities = document.getElementsByTagName('saved-cities');
+const cityName = document.getElementById('city-name-date');
+
+const temperature1 = document.getElementById('temp1');
+const cityWindSpeed1 = document.getElementById('wind1');
+const cityHumidity1 = document.getElementById('humidity1');
+const uvIndex1 = document.getElementById('uv-index1');
+const cityName1 = document.getElementById('city-name-date1');
+const icon1 = document.getElementById("img1");
+
+const temperature2 = document.getElementById('temp2');
+const cityWindSpeed2 = document.getElementById('wind2');
+const cityHumidity2 = document.getElementById('humidity2');
+const uvIndex2 = document.getElementById('uv-index2');
+const cityName2 = document.getElementById('city-name-date2');
+
+const temperature3 = document.getElementById('temp3');
+const cityWindSpeed3 = document.getElementById('wind3');
+const cityHumidity3 = document.getElementById('humidity3');
+const uvIndex3 = document.getElementById('uv-index3');
+const cityName3 = document.getElementById('city-name-date3');
+
+const temperature4 = document.getElementById('temp4');
+const cityWindSpeed4 = document.getElementById('wind4');
+const cityHumidity4 = document.getElementById('humidity4');
+const uvIndex4 = document.getElementById('uv-index4');
+const cityName4 = document.getElementById('city-name-date4');
+
+const temperature5 = document.getElementById('temp5');
+const cityWindSpeed5 = document.getElementById('wind5');
+const cityHumidity5 = document.getElementById('humidity5');
+const uvIndex5 = document.getElementById('uv-index5');
+const cityName5 = document.getElementById('city-name-date5');
